@@ -6,7 +6,7 @@
 /*   By: ljoly <ljoly@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/14 18:18:45 by ljoly             #+#    #+#             */
-/*   Updated: 2017/03/23 10:30:21 by ljoly            ###   ########.fr       */
+/*   Updated: 2017/03/31 13:35:45 by ljoly            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,50 +27,65 @@ static void		ft_push_bck(t_input **first, t_input *last)
 		*first = last;
 }
 
-static t_input	*store_input(t_env *env, char *line, t_room *room)
+static t_input	*store_input(t_env *env, char **line, t_room **room)
 {
 	t_input		*input;
 
+	if (I == IS_START || I == IS_END)
+		J = I;
 	if (!check_input(env, line, room))
 		return (NULL);
-	if (ANTS_CHECKED && !ROOMS_CHECKED && env->i == IS_ROOM)
-	{
+	if ((I == IS_START || I == IS_END) && J)
+		exit(ft_end(1, line, &env, room));
+	if (ANTS_OK && !ROOMS_OK && I == IS_ROOM)
 		get_rooms(env, line, room);
-		ft_putstr("coucou\n");
-//		ft_printf("NAME = %s\n", NAME); <<<<<<<< SEGFAULT;
+	else if (ROOMS_OK && ROOMS > 1 && I == IS_LINK)
+	{
+		if (!START || !END)
+			exit(ft_end(1, line, &env, room));
+		get_links(env, line, room);
 	}
-	ft_putstr("oui\n");
-	if (ROOMS_CHECKED && ROOMS > 1 && env->i == IS_LINK)
-		get_links(line, room);
 	if (!(input = ft_memalloc(sizeof(t_input))))
-		exit(ft_end(2));
-	input->line = ft_strdup(line);
-	input->next = NULL;
-	env->lines++;
+		exit(ft_end(2, line, &env, room));
+	input->line = ft_strdup(*line);
 	return (input);
 }
 
-t_room			*get_input(t_env *env)
+static int		list_input(t_env *env, char **line, t_room **room)
 {
 	t_input		*last;
-	t_room		*room;
+
+	if (!env->input)
+	{
+		if (!(env->input = store_input(env, line, room)))
+		{
+			free(*line);
+			return (0);
+		}
+	}
+	else
+	{
+		if (!(last = store_input(env, line, room)))
+		{
+			free(*line);
+			return (0);
+		}
+		ft_push_bck(&env->input, last);
+	}
+	return (1);
+}
+
+void			get_input(t_env *env, t_room **room)
+{
 	char		*line;
 	int			ret;
 
-	room = NULL;
 	while ((ret = get_next_line(0, &line)))
 	{
 		if (ret == -1)
-			exit(ft_end(3));
-		if (!env->input)
-			env->input = store_input(env, line, room);
-		else
-		{
-			last = store_input(env, line, room);
-			ft_push_bck(&env->input, last);
-		}
+			exit(ft_end(3, NULL, &env, room));
+		if (!list_input(env, &line, room))
+			break ;
 		free(line);
-		env->lines++;
 	}
-	return (room);
 }

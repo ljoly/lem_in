@@ -6,7 +6,7 @@
 /*   By: ljoly <ljoly@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/14 21:11:45 by ljoly             #+#    #+#             */
-/*   Updated: 2017/03/23 10:30:48 by ljoly            ###   ########.fr       */
+/*   Updated: 2017/03/30 20:35:38 by ljoly            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,64 +27,83 @@ static void		ft_push_bck(t_room **first, t_room *last)
 		*first = last;
 }
 
-static void		check_name(t_room *first, char *line, int len)
+static void		check_doubles(t_env *env, char **line, t_room **first, char *s)
 {
 	t_room		*tmp;
 
-	tmp = first;
+	tmp = *first;
 	while (tmp)
 	{
-		if (ft_strnstr(line, tmp->name, len))
-			exit(ft_end(1));
+		if (ft_strequ(tmp->name, s) || (env->x == tmp->x &&
+			env->y == tmp->y))
+		{
+			free(s);
+			exit(ft_end(1, line, &env, first));
+		}
 		tmp = tmp->next;
 	}
 }
 
-static void		get_room_info(t_room *room, char *line, t_room *first)
+static t_room	*get_room_info(t_env *env, t_room *room, char **line,
+	t_room **first)
 {
 	t_check		c;
+	char		*s;
 
 	c.i = 0;
-	while (line[c.i] != ' ')
+	while ((*line)[c.i] != ' ')
 		c.i++;
-	c.j = (c.i)++;
-	c.k = ft_atoi(&line[c.j]);
-	while (line[c.j] != ' ')
-		(c.j)++;
-	c.l = ft_atoi(&line[++(c.j)]);
-	check_name(first, line, c.j);
-	NAME = ft_strsub(line, 0, c.j);
-	X = c.k;
-	Y = c.l;
+	c.j = c.i;
+	c.k = ++(c.i);
+	while ((*line)[c.i] != ' ')
+		(c.i)++;
+	c.l = c.i;
+	while ((*line)[c.i])
+		(c.i)++;
+	env->x = ft_atoi(&(*line)[c.k]);
+	env->y = ft_atoi(&(*line)[c.l]);
+	s = ft_strsub(*line, 0, c.j);
+	check_doubles(env, line, first, s);
+	NAME = s;
+	X = env->x;
+	Y = env->y;
+	return (room);
 }
 
-static t_room	*create_new_room(t_env *env, char *line, t_room *first)
+static t_room	*create_new_room(t_env *env, char **line, t_room **first)
 {
 	t_room		*room;
 
 	if (!(room = ft_memalloc(sizeof(t_room))))
-		exit(ft_end(2));
-	get_room_info(room, line, first);
-	if (env->i == IS_START)
+		exit(ft_end(2, line, &env, first));
+	room = get_room_info(env, room, line, first);
+	if (J == IS_START)
+	{
+		if (START)
+			ft_strdel(&START);
 		START = ft_strdup(NAME);
-	if (env->i == IS_END)
+		J = 0;
+	}
+	if (J == IS_END)
+	{
+		if (END)
+			ft_strdel(&END);
 		END = ft_strdup(NAME);
+		J = 0;
+	}
 	ROOMS++;
 	return (room);
 }
 
-void			get_rooms(t_env *env, char *line, t_room *first)
+void			get_rooms(t_env *env, char **line, t_room **room)
 {
 	t_room		*last;
 
-	if (!first)
-	{
-		ft_putstr("ok\n");
-		first = create_new_room(env, line, NULL);
-	}
+	if (!*room)
+		*room = create_new_room(env, line, room);
 	else
 	{
-		last = create_new_room(env, line, first);
-		ft_push_bck(&first, last);
+		last = create_new_room(env, line, room);
+		ft_push_bck(room, last);
 	}
 }

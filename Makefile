@@ -6,12 +6,13 @@
 #    By: ljoly <ljoly@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/24 16:34:42 by ljoly             #+#    #+#              #
-#    Updated: 2017/03/22 17:20:46 by ljoly            ###   ########.fr        #
+#    Updated: 2017/03/28 21:05:06 by ljoly            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = lem-in
-SRCS = main.c get_input.c check_input.c get_rooms.c get_links.c
+SRCS = main.c get_input.c check_input.c get_instructions.c get_rooms.c \
+	   get_links.c get_path.c move.c next_move.c ft_end.c
 FLAGS = -Wall -Werror -Wextra
 LIBFT = ./libft/
 HEADER = ./includes
