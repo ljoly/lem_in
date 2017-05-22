@@ -6,7 +6,7 @@
 /*   By: ljoly <ljoly@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/10 18:23:56 by ljoly             #+#    #+#             */
-/*   Updated: 2017/05/22 18:57:34 by ljoly            ###   ########.fr       */
+/*   Updated: 2017/05/22 19:26:46 by ljoly            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ void				get_links(t_env *env, char **line, t_room **first);
 void				get_path(t_env *env, t_room **first);
 void				move(t_env *env, t_room *end, t_room **first);
 void				transfer_data(t_env *env, t_room *room, t_room *go);
-int					move_from_start(t_room *room, t_room **first);
 void				next_move(t_room **first);
 int					ft_end(int status, char **line, t_env **env, t_room **room);
 
