@@ -6,7 +6,7 @@
 /*   By: ljoly <ljoly@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/28 21:04:51 by ljoly             #+#    #+#             */
-/*   Updated: 2017/03/30 18:44:27 by ljoly            ###   ########.fr       */
+/*   Updated: 2017/05/22 18:57:12 by ljoly            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ static t_room	*finding_first_ant(t_env *env, t_room **first)
 	{
 		if (ANT && !CANT_MOVE && !ft_strequ(NAME, END))
 		{
-			if (ft_strequ(NAME, START))
+			if (ft_strequ(NAME, START) && move_from_start(room, first))
 				first_ant = room;
 			else if (ANT_NAME > 0 && ANT_NAME < ant)
 			{

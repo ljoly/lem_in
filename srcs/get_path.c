@@ -6,7 +6,7 @@
 /*   By: ljoly <ljoly@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/26 17:34:57 by ljoly             #+#    #+#             */
-/*   Updated: 2017/03/30 18:43:54 by ljoly            ###   ########.fr       */
+/*   Updated: 2017/05/22 18:56:29 by ljoly            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,29 @@ static void		assign_weight(t_env *env, t_room *room, t_room **first, int w)
 			lk = lk->next;
 		}
 	}
+}
+
+int				move_from_start(t_room *room, t_room **first)
+{
+	t_link		*lk;
+	t_room		*tmp;
+
+	if (room->link)
+	{
+		lk = *room->link;
+		while (lk)
+		{
+			tmp = *first;
+			while (tmp)
+			{
+				if (ft_strequ(lk->l, tmp->name) && !ANT)
+					return (1);
+				tmp = tmp->next;
+			}
+			lk = lk->next;
+		}
+	}
+	return (0);
 }
 
 void			get_path(t_env *env, t_room **first)
